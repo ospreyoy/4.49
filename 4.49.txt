@@ -1,0 +1,76 @@
+data segment
+socre db 76,69,84,90,52,73,88,99,63,100,80
+s5 db 0
+s6 db 0
+s7 db 0
+s8 db 0
+s9 db 0
+data ends
+
+stacks segment stack 'stack'
+stk db 20 dup(?)
+top equ length stk
+stacks ends
+
+code segment
+assume ds:data,cs:code,ss:stacks
+start:  mov ax,data
+        mov ds,ax
+        mov ax,stacks
+        mov ss,ax
+        mov sp,top
+        LEA SI,socre
+        MOV CX,11
+    l1: mov AL,[SI]
+        CALL ppp
+        INC SI
+        LOOP l1
+        CALL output
+        JMP exit
+        
+    ppp proc near
+        CMP AL,59
+        JBE IS5
+        CMP AL,69
+        JBE IS6
+        CMP AL,79
+        JBE IS7
+        CMP AL,89
+        JBE IS8
+        CMP AL,100
+        JBE IS9
+    IS5:inc s5
+        ret
+    IS6:inc s6
+        ret
+    IS7:inc s7
+        ret
+    IS8:inc s8
+        ret
+    IS9:inc s9
+        ret
+    ppp endp
+    
+    output proc near
+        LEA SI,S5
+        MOV cx,5
+    l2: MOV DL,[SI]
+        ADD DL,30H
+        MOV AH,02H
+        INT 21H
+        MOV DL,0AH
+        MOV AH,02H
+        INT 21H
+        MOV DL,0DH
+        INT 21H
+        INC SI
+        loop l2
+        ret
+    output endp
+    
+    exit:mov AH,4CH
+        int 21H
+        ret
+        
+code ends
+end start
